@@ -28,19 +28,23 @@ function Add-AzsScaleUnitNode
     [CmdletBinding()]
     param(
         [Parameter(Mandatory = $true)]
+        [ValidateNotNull()]
         [Microsoft.AzureStack.Management.Fabric.Admin.Models.ScaleOutScaleUnitParameters[]]
         $NodeList,
 
         [Parameter(Mandatory = $false)]
+        [ValidateNotNullOrEmpty()]
         [System.String]
         $ResourceGroupName,
 
         [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
         [System.String]
         $ScaleUnit,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
         [System.String]
+        [ValidateNotNullOrEmpty()]
         $Location,
 
         [Parameter(Mandatory = $false)]
@@ -66,6 +70,7 @@ function Add-AzsScaleUnitNode
 
     Process {
 
+    $ScaleUnit = Get-ResourceName -ResourceName $ScaleUnit
 
 
     $NewServiceClient_params = @{
@@ -82,7 +87,11 @@ function Add-AzsScaleUnitNode
 
     $FabricAdminClient = New-ServiceClient @NewServiceClient_params
 
-    $ParamList = New-ScaleOutScaleUnitParametersListObject -NodeList $NodeList -AwaitStorageConvergence $AwaitStorageConvergence:IsPresent
+    $ParamList = New-ScaleOutScaleUnitParametersListObject -NodeList $NodeList -AwaitStorageConvergence:$AwaitStorageConvergence:IsPresent
+
+    if ([System.String]::IsNullOrEmpty($Location)) {
+        $Location = (Get-AzureRmLocation).Location
+    }
 
     if ([System.String]::IsNullOrEmpty($ResourceGroupName)) {
         $ResourceGroupName = "System.$Location"
