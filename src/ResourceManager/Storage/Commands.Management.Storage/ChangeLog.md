@@ -18,7 +18,10 @@
         - Additional information about change #1
 -->
 ## Current Release
-* Support get the Storage resource usage of a specific location
+* Add -EnableHierarchicalNamespace to New-AzureRmStorageAccount
+
+## Version 5.2.0
+* Support get the Storage resource usage of a specific location, and add warning message for get global Storage resource usage is obsolete.
     - Get-AzureRmStorageUsage
 
 ## Version 5.1.0
